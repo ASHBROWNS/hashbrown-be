@@ -1,6 +1,120 @@
+class Bank {
+    private String BankNumber; // 계좌 번호
+    private String name;       // 이름
+    protected int balance;     // 잔액
+
+    public Bank(String BankNumber, String name, int balance) {
+        this.BankNumber = BankNumber;
+        this.name = name;
+        this.balance = balance;
+    }
+
+    // 잔액 입금
+    public void gmoney(int money) {
+        if (money <= 0) {
+            System.out.println("입금 금액은 0보다 커야 합니다.");
+            return;
+        }
+        balance += money - (money / 100); // 1% 수수료
+    }
+
+    // 잔액 출금
+    public void bmoney(int money, String requesterName) {
+        if (!name.equals(requesterName)) {
+            System.out.println("출금 실패: 예금주가 아닙니다.");
+            return;
+        }
+        if (money > balance) {
+            System.out.println("출금 실패: 잔액이 부족합니다.");
+            return;
+        }
+        balance -= money + (money / 100); // 1% 수수료 포함
+    }
+
+    // 계좌 번호
+    public String getBankNumber() {
+        return BankNumber;
+    }
+
+    // 예금주 이름
+    public String getName() {
+        return name;
+    }
+
+    // 잔액
+    public int getBalance(String retryName) {
+        if (!name.equals(retryName)) {
+            System.out.println("잔액 조회 실패: 예금주가 아닙니다.");
+        }
+        return balance;
+    }
+
+    // 계좌 정보
+    public String sent() {
+        return "계좌 번호: " + BankNumber + ", 예금주: " + name + ", 잔액: " + balance + "원";
+    }
+}
+
+
 public class Main {
     public static void main(String[] args) {
 
+        Bank[] account = new Bank[10]; //계좌 총 10개만들 수 있는 배열생성
+        int accountlist = 0; // 계좌갯수
+
+        account[accountlist++] = new Bank("123-456", "양효준", 100000);
+        account[accountlist++] = new Bank("789-101", "김현호", 10000000);
+
+        //입금
+        for (int i = 0; i < accountlist; i++) {
+            if(account[i].getBankNumber().equals("123-456")) {
+                account[i].gmoney(5000);
+                System.out.println(account[i].sent());
+            }
+        }
+
+        //출금
+        for (int i = 0; i < accountlist; i++) {
+            if(account[i].getBankNumber().equals("789-101")) {
+                account[i].bmoney(3000,"김현호");
+                System.out.println(account[i].sent());
+
+            }
+        }
+
+
+        //조회
+        for(int i = 0; i < accountlist; i++) {
+            if(account[i].getBankNumber().equals("123-456")) {
+                System.out.println(account[i].sent());
+
+            }
+        }
+
+        //조회
+        for(int i = 0; i < accountlist; i++) {
+            System.out.println(account[i].sent());
+        }
+
+        //잘못된 출금
+        for (int i = 0; i < accountlist; i++) {
+            if(account[i].getBankNumber().equals("789-101")) {
+                account[i].bmoney(3000,"양효준");
+                System.out.println(account[i].sent());
+
+            }
+        }
+        account[accountlist++] = new Bank("789-101", "조예설", 10000000);
+
+
+
+        //음수입금
+        for (int i = 0; i < accountlist; i++) {
+            if(account[i].getBankNumber().equals("123-456")) {
+                account[i].gmoney(-500);
+                System.out.println(account[i].sent());
+            }
+        }
         // TODO-1 은행 객체 생성
         // 은행 객체를 생성하여 계좌 관리 기능을 수행할 수 있도록 합니다.
 
